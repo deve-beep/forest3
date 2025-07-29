@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forest Department, Chandauli (U.P.)</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      margin: 0;
+      color: #064e3b;
+      transition: background-image 1s ease-in-out;
+    }
+
+    header {
+      background: rgba(6, 95, 70, 0.9);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    main, section {
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2, .card h3 {
+      margin-top: 0;
+      color: #065f46;
+    }
+
+    button {
+      background-color: #047857;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #065f46;
+    }
+
+    section h2 {
+      grid-column: 1 / -1;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #065f46;
+    }
+
+    footer {
+      background-color: #047857;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+    }
+
+    .goal-box {
+      background-color: #ecfdf5;
+      border-left: 5px solid #10b981;
+      padding: 15px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    #clock {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #d1fae5;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="leaves"></canvas>
+  <header>
+    <h1>Forest Department, Chandauli (U.P.)</h1>
+    <p>Protecting Nature, Preserving Future</p>
+    <div id="clock"></div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Office Login</h2>
+      <p>Login as an officer (DFO/SDO/Ranger) to manage duties.</p>
+      <button onclick="loginOfficer()">Login</button>
+      <p id="loginStatus" style="margin-top: 10px; font-weight: bold;"></p>
+    </div>
+
+    <div class="card">
+      <h2>Office Information</h2>
+      <p>
+        Address: Forest Department Office, Chandauli, Uttar Pradesh<br />
+        Contact: +91-XXXX-XXX-XXX<br />
+        Email: forestchandauli@up.gov.in
+      </p>
+      <div class="goal-box" id="todaysGoal">
+        Today's Goal: Supervise plantation in Naugarh Block & finalize sapling inventory.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Afforestation Activities</h2>
+      <p id="plantation-info">
+        - Plantation drives conducted across blocks<br />
+        - Saplings distributed: 1,00,000+ in 2025<br />
+        - Monitoring through geotagged images
+      </p>
+      <button onclick="trackAfforestation()">Track Afforestation</button>
+    </div>
+
+    <div class="card">
+      <h2>Deforestation Monitoring</h2>
+      <p id="deforestation-info">
+        - Illegal logging reports<br />
+        - Satellite data integration<br />
+        - Enforcement team actions
+      </p>
+      <button onclick="reportIncident()">Report/View Incidents</button>
+    </div>
+
+    <div class="card">
+      <h2>Visitor Attendance</h2>
+      <p>Click a photo and mark your visit to the website.</p>
+      <input type="file" accept="image/*" capture="environment" id="attendancePhoto" />
+      <button onclick="markAttendance()">Submit Attendance</button>
+      <p id="attendanceStatus" style="margin-top: 10px; font-weight: bold;"></p>
+    </div>
+  </main>
+
+  <section>
+    <h2>Officer Tracking Panel</h2>
+    <div class="card">
+      <h3>Senior Ranger</h3>
+      <p>View task updates, field reports, and assign duties.</p>
+      <button onclick="openDashboard('Ranger')">Ranger Dashboard</button>
+    </div>
+    <div class="card">
+      <h3>DFO</h3>
+      <p>Track afforestation drives, and team performance.</p>
+      <button onclick="openDashboard('DFO')">DFO Panel</button>
+    </div>
+    <div class="card">
+      <h3>SDO</h3>
+      <p>Access alerts, approve field actions, and reports.</p>
+      <button onclick="openDashboard('SDO')">SDO Access</button>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Forest Department, Chandauli U.P. | Designed for awareness & tracking
+  </footer>
+
+  <script>
+    const backgrounds = [
+      'https://images.unsplash.com/photo-1578926287985-ec05b0bba1d0',
+      'https://images.unsplash.com/photo-1564468781191-7a0df1db6978',
+      'https://images.unsplash.com/photo-1531193086370-b7d9c1c1ec7e',
+      'https://images.unsplash.com/photo-1600693902135-97599b410c84'
+    ];
+
+    let current = 0;
+    setInterval(() => {
+      document.body.style.backgroundImage = `url('${backgrounds[current]}')`;
+      current = (current + 1) % backgrounds.length;
+    }, 8000);
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function trackAfforestation() {
+      alert("Tracking afforestation drive with geotagged updates...");
+    }
+
+    function reportIncident() {
+      const incident = prompt("Enter a deforestation incident detail:");
+      if (incident) {
+        alert("Incident reported: " + incident);
+      } else {
+        alert("No incident reported.");
+      }
+    }
+
+    function openDashboard(role) {
+      alert(role + " Dashboard opening... (demo action)");
+    }
+
+    function markAttendance() {
+      const input = document.getElementById("attendancePhoto");
+      const status = document.getElementById("attendanceStatus");
+
+      if (input.files.length > 0) {
+        const fileName = input.files[0].name;
+        status.textContent = "Attendance marked with photo: " + fileName;
+        status.style.color = "green";
+      } else {
+        status.textContent = "Please upload a photo to mark attendance.";
+        status.style.color = "red";
+      }
+    }
+
+    function loginOfficer() {
+      const user = prompt("Enter your officer role (DFO / SDO / Ranger):");
+      const validUsers = ["DFO", "SDO", "Ranger"];
+      const loginStatus = document.getElementById("loginStatus");
+
+      if (validUsers.includes(user)) {
+        loginStatus.textContent = user + " login successful!";
+        loginStatus.style.color = "green";
+      } else {
+        loginStatus.textContent = "Invalid role. Access denied.";
+        loginStatus.style.color = "red";
+      }
+    }
+
+    // Falling leaf animation
+    const canvas = document.getElementById("leaves");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const leaves = [];
+    for (let i = 0; i < 20; i++) {
+      leaves.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 30 + 10,
+        speedY: Math.random() * 2 + 1,
+        speedX: Math.random() * 2 - 1,
+        angle: Math.random() * 360,
+        color: `hsl(${Math.random() * 50 + 20}, 70%, 50%)`
+      });
+    }
+
+    // function drawLeaves() {
+    //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //   for (let leaf of leaves) {
+    //     ctx.beginPath();
+    //     ctx.ellipse(leaf.x, leaf.y, leaf.size, leaf.size / 2, leaf.angle, 0, Math.PI * 2);
+    //     ctx.fillStyle = leaf.color;
+    //     ctx.fill();
+
+    //     leaf.y += leaf.speedY;
+    //     leaf.x += leaf.speedX;
+    //     if (leaf.y > canvas.height) leaf.y = -leaf.size;
+    //     if (leaf.x > canvas.width) leaf.x = -leaf.size;
+    //     if (leaf.x < -leaf.size) leaf.x = canvas.width + leaf.size;
+    //   }
+    // }
+    // setInterval(drawLeaves, 50);
+  </script>
+</body>
+</html>
+
